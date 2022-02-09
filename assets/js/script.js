@@ -55,13 +55,12 @@ var getCityWeather = function(locationData, city) {
 };
  
 var displayWeather = function(weatherData, city) {
-   
     var currentDay = dayjs(weatherData.current.dt * milli).utc().local().format("l")
     var currentUV = weatherData.current.uvi;
     $("#current-box").remove();
+    $("#title").remove();
     $("#forcast-row").remove();
-    console.log(weatherData)
- 
+    
     $("#current").append($("<div>").addClass("col-12 border border-dark").attr("id","current-box"));
  
     $("#current-box").append($("<div>").addClass("row").attr("id","current-row"));
@@ -93,14 +92,12 @@ var displayWeather = function(weatherData, city) {
     else {
         $("#uv-color").addClass("bg-danger")
     }
-    $("#forcast-title").append($("<h3>5-Day Forcast:</h3>").addClass("col-12 mt-3"));
+    $("#forcast-title").append($("<h3>5-Day Forcast:</h3>").addClass("col-12 mt-3").attr("id", "title"));
  
     displayForcast(weatherData);
-   
 };
  
 var displayForcast = function(weatherData) {
-   
     $("#forcast").append($("<div>").addClass("row justify-content-around text-light").attr("id", "forcast-row"));
    
     for (var  i = 0; i < 5; i++) {
