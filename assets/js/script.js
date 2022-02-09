@@ -62,7 +62,7 @@ var displayWeather = function(weatherData, city) {
     $("#forcast-row").remove();
     console.log(weatherData)
  
-    $("#current-container").append($("<div>").addClass("col-12 border border-dark").attr("id","current-box"));
+    $("#current").append($("<div>").addClass("col-12 border border-dark").attr("id","current-box"));
  
     $("#current-box").append($("<div>").addClass("row").attr("id","current-row"));
  
@@ -93,7 +93,7 @@ var displayWeather = function(weatherData, city) {
     else {
         $("#uv-color").addClass("bg-danger")
     }
-    $("#current-container").append($("<h3>5-Day Forcast:</h3>").addClass("col-12 mt-3"));
+    $("#forcast-title").append($("<h3>5-Day Forcast:</h3>").addClass("col-12 mt-3"));
  
     displayForcast(weatherData);
    
