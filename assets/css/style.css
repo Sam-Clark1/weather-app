@@ -11,3 +11,12 @@
     color: white;
     margin-bottom: 20px;
 }
+ 
+img {
+    width: 4rem;
+    height: 4rem;
+}
+ 
+.orange {
+    background-color: orange;
+}
