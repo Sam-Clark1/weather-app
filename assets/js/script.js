@@ -2,6 +2,8 @@ var cityInput = document.querySelector("#city-input")
  
 var weatherKey = "3c0ffffa2f1e899bf98403431f25c752";
 var milli = 1000
+var historyIdCounter = 0;
+var searchHistory = [];
  
 var formSubmitHandler = function(event) {
     event.preventDefault();
@@ -9,25 +11,14 @@ var formSubmitHandler = function(event) {
     var cityName = cityInput.value.trim();
     if (cityName) {
         getCityCoords(cityName);
-        // createNewSearchHisItem (cityName)
     }
     else {
         alert("Please enter a city name.")
     };
 };
  
-// var createNewSearchHisItem = function (cityName) {
-//     var cityItem = cityName
-//     $("ul").append($(`<li></li>`).addClass("col-12 mt-2 bg-secondary text-light rounded").attr("id", "list1"))
-//     $("#list1").append($(`<button>${cityItem}</button>`).addClass(" col-12 btn btn-secondary bg-secondary text-light").attr("onclick", `getCityCoords(city)`))
-// };
- 
-// var loadSearchHistory = function() {
- 
-// };
- 
-var getCityCoords = function(city) {
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city},US&appid=${weatherKey}`)
+var getCityCoords = function(cityName) {
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityName},US&appid=${weatherKey}`)
     .then(function(response){
         response.json().then(function(data){
             if (data.length === 0){
@@ -35,21 +26,50 @@ var getCityCoords = function(city) {
                 alert("Please enter a valid city name")
             }
             else {
-            getCityWeather(data, city);
-        };
+            getCityWeather(data);
+            cityInput.value = ""
+            };
         });
     });
 };
  
-var getCityWeather = function(locationData, city) {
+var getCityWeather = function(locationData) {
     var lat = locationData[0].lat;
     var lon = locationData[0].lon;
+    var city = locationData[0].name;
     fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherKey}`)
     .then(function(response){
         response.json().then(function(data){
-           
-           
             displayWeather(data, city);
+            debugger
+            var newCityCounter = 0;
+            if (searchHistory.length > 0) {
+                for (var i = 0; i < searchHistory.length; i++) {
+                    var notThere = searchHistory[i].name.indexOf(city) == -1;
+                    var isThere = searchHistory[i].name.indexOf(city) == !-1;
+                    if (isThere) {
+                        console.log("is there")
+                        return
+                    }
+                    else if(notThere) {
+                        console.log("not there")
+                        newCityCounter++
+                        if (newCityCounter == searchHistory.length) {
+                            var historyObj = {
+                                name: city
+                            };
+                            createNewHistory(historyObj);
+                        }
+                    }
+                }
+            }
+            if (searchHistory.length === 0) {
+                console.log("created first item")
+                var historyObj = {
+                    name: city
+                };
+                createNewHistory(historyObj);
+            }
         });
     });
 };
@@ -60,7 +80,7 @@ var displayWeather = function(weatherData, city) {
     $("#current-box").remove();
     $("#title").remove();
     $("#forcast-row").remove();
-    
+   
     $("#current").append($("<div>").addClass("col-12 border border-dark").attr("id","current-box"));
  
     $("#current-box").append($("<div>").addClass("row").attr("id","current-row"));
@@ -100,7 +120,7 @@ var displayWeather = function(weatherData, city) {
 var displayForcast = function(weatherData) {
     $("#forcast").append($("<div>").addClass("row justify-content-around text-light").attr("id", "forcast-row"));
    
-    for (var  i = 0; i < 5; i++) {
+    for (var  i = 1; i < 6; i++) {
         var forcastDate = dayjs(weatherData.daily[i].dt * milli).utc().local().format("l")
         $("#forcast-row").append($("<div>").addClass("card bg-secondary text-md m-3").attr("id", `card-container${i}`).attr("style", "width: 14rem"));
         $(`#card-container${i}`).append($("<div>").addClass("card-body").attr("id",`card-box${i}`));
@@ -119,4 +139,45 @@ var displayForcast = function(weatherData) {
  }
 }
  
+var createNewHistory = function(historyObj) {
+    $("ul").append($("<li>").addClass("col-12 mt-2 bg-secondary text-light rounded").attr("data-history-id", historyIdCounter).attr("id", historyIdCounter));
+    $(`#${historyIdCounter}`).append($(`<button>${historyObj.name}</button>`).addClass("col-12 btn btn-secondary bg-secondary text-light").attr("onclick", `getCityCoords("${historyObj.name}")`));
+   
+    historyObj.id = historyIdCounter;
+ 
+    searchHistory.push(historyObj)
+   
+    saveHistory();
+   
+    historyIdCounter++;
+};
+ 
+var saveHistory = function() {
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+};
+ 
+var loadHistory = function() {
+    var savedHistory = localStorage.getItem("searchHistory");
+    if (!savedHistory) {
+        return false;
+    }
+    console.log("saved history found");
+    savedHistory = JSON.parse(savedHistory);
+    for (var i = 0; i < savedHistory.length; i++) {
+        createNewHistory(savedHistory[i]);  
+    }
+ };
+ 
+var deleteHistory = function() {
+    localStorage.clear();
+    $("li").remove();
+ 
+}
+ 
+// deleteHistory()
+ 
 $("#city-form").on("submit", formSubmitHandler);
+$("#delete-btn").on("click", deleteHistory)
+ 
+loadHistory()
+
