@@ -19,7 +19,7 @@ var formSubmitHandler = function(event) {
 //  Recieves city name from submit and applys it to api fetch.
 // Retrieves location data and sends it to get weather data.
 var getCityCoords = function(cityName) {
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityName},US&appid=${weatherKey}`)
+    fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&appid=${weatherKey}`)
     .then(function(response){
         response.json().then(function(data){
             // Checks if city name input is valid city. An invalid city returns an empty array.
