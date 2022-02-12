@@ -20,22 +20,25 @@
             <div class="col-sm-12 col-xl-3">
                
                 <h3 class="text-start fw-bold">Search for a City</h3>
- 
+                <!-- Form for inputed desired search -->
                 <form id="city-form">
                     <input id="city-input" class="col-12 border border-3 rounded fs-4" placeholder="San Diego"></input>
                     <button type="submit" class="btn btn-primary col-12 mt-2">Search</button>
                 </form>
  
-                <ul class=" col-12 list-unstyled border-top border-3 mt-3"></ul>
-               
+                <h4 class="text-start fw-bold mt-2">Search History:</h4>
+                <!-- Where search history is appended -->
+                <ul class=" col-12 list-unstyled border-top border-3 mt-2"></ul>
+                <!-- Deletes search history -->
                 <button id="delete-btn" class="col-12 my-2 btn btn-secondary bg-danger text-light">Delete All</button>
            
             </div>
  
             <div id="current-container" class="col-sm-12 col-xl-9">
-               
+                <!-- Where current weather is appended -->
                 <div id="current" class="col-12"></div>
                 <div id="forcast-title" class="col-12"></div>
+                <!-- Where 5 day forcast weather is appended-->
                 <div id="forcast" class="col-12"></div>
  
             </div>
